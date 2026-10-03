@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Para Noah</title>
+
+  <!-- Tipografía editorial y clásica -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- Canvas de fondo para partículas y pétalos multicolor (azul marino, verde olivo, gris plomo, amarillo mostaza) -->
+  <canvas id="petalCanvas"></canvas>
+
+  <!-- Elementos de sus gustos y Lycoris en los laterales (sin fondo, flotando orgánicamente) -->
+  <aside class="floral-sidebar floral-left" aria-label="Decoraciones">
+    <img src="assets/flowers/lycoris_blue_transparent.png" alt="" class="edge-item flower-l1">
+
+    <!-- 7UP Can sin fondo -->
+    <div class="edge-item decor-7up" title="7UP bien fría">
+      <img src="assets/7up_can_transparent.png" alt="7UP">
+    </div>
+
+    <img src="assets/flowers/lycoris_blue_transparent.png" alt="" class="edge-item flower-l2">
+
+    <!-- Stardew Valley Pollito Azul -->
+    <div class="edge-item decor-chicken" title="Pollito Azul de Stardew Valley">
+      <img src="assets/blue_chicken.png" alt="Stardew Blue Chicken">
+    </div>
+
+    <img src="assets/flowers/lycoris_blue_transparent.png" alt="" class="edge-item flower-l3">
+
+    <!-- Midsommar Logo folclórico -->
+    <div class="edge-item decor-midsommar" title="Midsommar">
+      <img src="assets/midsommar_logo.png" alt="Midsommar">
+    </div>
+
+    <img src="assets/flowers/lycoris_blue_transparent.png" alt="" class="edge-item flower-l4">
+  </aside>
+
+  <aside class="floral-sidebar floral-right" aria-label="Decoraciones">
+    <img src="assets/flowers/lycoris_blue_transparent.png" alt="" class="edge-item flower-r1">
+
+    <!-- Marie de Skullgirls sin fondo -->
+    <div class="edge-item decor-marie" title="Marie Korbel — Skullgirls">
+      <img src="assets/marie_skullgirls.png" alt="Marie Skullgirls">
+    </div>
+
+    <img src="assets/flowers/lycoris_blue_transparent.png" alt="" class="edge-item flower-r2">
+
+    <!-- Stardew Valley Junimo saltando -->
+    <div class="edge-item decor-junimo" title="Junimo — Stardew Valley">
+      <img src="assets/junimo.gif" alt="Junimo Stardew">
+    </div>
+
+    <img src="assets/flowers/lycoris_blue_transparent.png" alt="" class="edge-item flower-r3">
+    <img src="assets/flowers/lycoris_blue_transparent.png" alt="" class="edge-item flower-r4">
+  </aside>
+
+  <!-- Pantalla de bienvenida limpia y sobria -->
+  <div id="introModal" class="intro-overlay">
+    <div class="intro-content">
+      <div class="flower-glow-wrap">
+        <img src="assets/flowers/lycoris_blue_transparent.png" alt="Lycoris Radiata azul" class="intro-lycoris">
+      </div>
+      <h1 class="intro-heading">Para Noah</h1>
+      <button id="btnEnter" class="enter-btn">Entrar</button>
+    </div>
+  </div>
+
+  <!-- Barra de audio sutil y minimalista en la esquina -->
+  <aside class="audio-widget" id="audioWidget">
+    <button id="playPauseBtn" class="audio-btn" aria-label="Reproducir / Pausar">
+      <span class="music-icon" id="musicIcon">♪</span>
+      <span class="audio-title">Exist for Love</span>
+    </button>
+  </aside>
+
+  <!-- Contenedor oculto del reproductor de YouTube -->
+  <div id="ytContainer" class="yt-hidden">
+    <div id="ytPlayer"></div>
+  </div>
+  <audio id="fallbackAudio" loop preload="none">
+    <source src="assets/audio/exist_for_love.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Contenedor principal de lectura -->
+  <main class="letter-layout">
+
+    <!-- Cabecera con la foto de Noah en proporción natural -->
+    <header class="letter-header">
+      <div class="portrait-container">
+        <img src="Foto/Noah.jpg" alt="Noah" class="noah-photo" id="noahPhoto">
+      </div>
+      <h2 class="header-name">Noah</h2>
+    </header>
+
+    <!-- La carta continua y natural, sin cajas ni fragmentaciones artificiales -->
+    <article class="letter-content">
+
+      <p class="letter-p">
+        hola noah como estas? espero que en tu dia las cosas esten pasando bien, que este saliendo todo como lo esperas
+        y que por un tiempo de verdad sientas que estas disfrutando todo esto porque genuinamente lo mereces, siempre me
+        parecio feo el no poder estar ahi cerca para darte un regalo como de verdad quisiera, pero no por eso voy a
+        pasar tu dia especial sin almenos darte algo, es un pequeño espacio donde hay algunas cositas, lo que me gusta
+        de ti, lo que eres y tambien guarda las cosas que te gustan que he podido documentar en todo lo que te conozco
+      </p>
+
+      <p class="letter-p">
+        Hace mucho no escribo una carta para ti sabes? realmente las cosas entre los 2 de verdad tuvieron un MONTON de
+        dificultades y se todas las veces que lo he repetido pero de corazon perdon por ser una persona tan complicada
+        contigo, de verdad te digo que odio discutir cuando se trata de ti, odio el sentirte lejos y a su vez odio
+        tambien el pensar que las cosas entre los 2 no funcionan, es un pensamiento con el cual llevo teniendo conflicto
+        mucho tiempo porque honestamente no quiero irme de tu lado no quiero sentir que algo de esto termina, te has
+        convertido en el todo de lo que vivo mis dias a dias, te veo en cada nube, cada flor, cada cancion que escucho
+        de alguna forma mi cerebro encuentra el camino para relacionarlo contigo, no puedo pasar un dia en el cual no
+        vaya a la u en el que todo el transcurso te vea almenos 50 veces, genuinamente mi vida es mejor por eso el
+        comparar un cielo que es hermoso con tu rostro y darme cuenta que le sacas años luz de diferencia en un concurso
+        de belleza, el pasar por un lugar donde me imagino sentado contigo los 2 solo compartiendo y ver como
+        magicamente el lugar se hace mil veces mas lindo solo por imaginarte ahi, muchas veces no dimensiono con
+        claridad lo mucho que eres porque sales completamente del entendimiento de mi cabeza, hasta en las malditas
+        clases donde tengo que pensar en matematica termino pensando en que el termino infinito se queda corto contigo,
+        en fin, lo que realmente quiero decir con esto es que genuinamente gracias por estar aqui, por no irte en los
+        momentos donde se que te he cansado, de verdad se que no merezco para nada ni el 10% de lo que eres, y aun asi
+        el saber que existes mejora por completo lo que vivo todos los dias, gracias por eso noah feliz cumpleaños, eres
+        alguien realmente especial
+      </p>
+
+      <div class="letter-sep">
+        <span class="sep-leaf">✦</span>
+        <span class="sep-sun">✤</span>
+        <span class="sep-leaf">✦</span>
+      </div>
+
+      <p class="letter-p">
+        Tambien queria separar un momento para hablar de tus gustos y tu arte, DIOS MIO NOAH, cada vez que me envias un
+        adelanto de lo que estas diseñando o dibujando, cada vez que me hablas de lo que te gusta me termino perdiendo
+        porque de verdad toda tu vida trabajaste tanto por tu arte que a dia de hoy tienes un nivel que admiro
+        completamente, ojala tener la mitad del talento que has desarrollado para crear algo, lo que sabes de anatomia,
+        lo mucho que sabes de color, ES INCREIBLE, eres una artista que admiro muchisimo en ese aspecto, me he llegado a
+        sentir insipirado a dibujar solo viendo las cosas que haces
+      </p>
+
+      <p class="letter-p">
+        te amo mucho noah, espero este regalo te guste, de corazon ojala poder estar presente cada uno de tus siguientes
+        cumpleaños, lo eres todo, quisiera ver como sigue creciendo tu nivel al dibujar, me encantaria poder seguir
+        viviendo mis dias relacionandote con todo lo que me rodea, quiero que me sigas hablando de tus juegos, de tus
+        gatos, de tu cabello, Amo cada cosa que respecta a ti, muchas gracias por existir y coincidir conmigo solo tu
+        presencia cambia la vida de las personas.
+      </p>
+
+    </article>
+
+    <!-- Cierre botánico final -->
+    <footer class="letter-footer">
+      <img src="assets/flowers/lycoris_blue_transparent.png" alt="Lycoris Radiata" class="footer-lycoris-img">
+      <p class="footer-line">Feliz cumpleaños Noah</p>
+    </footer>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
