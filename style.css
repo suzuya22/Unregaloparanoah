@@ -590,54 +590,142 @@ body {
 }
 
 /* ==========================================================================
+   ELEMENTOS DECORATIVOS INTEGRADOS EN MÓVIL
+   (En escritorio amplio están ocultos porque ya flotan a los laterales)
+   ========================================================================== */
+.mobile-decor-cluster {
+  display: none;
+}
+
+/* ==========================================================================
    RESPONSIVIDAD Y AJUSTES LATERALES
    ========================================================================== */
-@media (max-width: 1200px) {
+@media (max-width: 1200px) and (min-width: 1025px) {
   .floral-sidebar {
-    width: 240px;
+    width: 220px;
   }
   .edge-item.flower-l1,
   .edge-item.flower-l2,
   .edge-item.flower-l3,
   .edge-item.flower-l4 {
-    width: 250px !important;
-    left: -130px !important;
+    width: 230px !important;
+    left: -140px !important;
   }
   .edge-item.flower-r1,
   .edge-item.flower-r2,
   .edge-item.flower-r3,
   .edge-item.flower-r4 {
-    width: 250px !important;
-    right: -130px !important;
+    width: 230px !important;
+    right: -140px !important;
   }
-  .decor-7up { width: 85px; left: 8px; }
-  .decor-chicken { width: 75px; left: 16px; }
-  .decor-midsommar { width: 180px; left: 4px; }
-  .decor-marie { width: 140px; right: 10px; }
-  .decor-junimo { width: 60px; right: 20px; }
+  .decor-7up { width: 75px; left: 10px; }
+  .decor-chicken { width: 68px; left: 18px; }
+  .decor-midsommar { width: 160px; left: 6px; }
+  .decor-marie { width: 130px; right: 10px; }
+  .decor-junimo { width: 55px; right: 20px; }
 }
 
-@media (max-width: 768px) {
+/* En tablets y móviles (1024px o menos), las barras laterales se ocultan
+   y las decoraciones pasan a ser detalles hermosos entre párrafos */
+@media (max-width: 1024px) {
   .floral-sidebar {
-    display: none; /* En pantallas pequeñas se ocultan para mantener la lectura limpia */
+    display: none !important;
   }
 
+  .mobile-decor-cluster {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  .mobile-cluster-header {
+    gap: 18px;
+    margin: 18px auto 28px;
+  }
+
+  .mob-item {
+    display: block;
+    height: auto;
+    user-select: none;
+  }
+
+  .mob-chicken {
+    width: 44px;
+    transform: scaleX(-1);
+    image-rendering: pixelated;
+    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 14px rgba(56, 189, 248, 0.4));
+  }
+
+  .mob-flower {
+    width: 65px;
+    transform: rotate(15deg);
+    filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.35));
+  }
+
+  .mob-junimo {
+    width: 40px;
+    image-rendering: pixelated;
+    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 14px rgba(137, 168, 100, 0.5));
+  }
+
+  .mobile-cluster-mid {
+    gap: 28px;
+    margin: 36px auto 14px;
+  }
+
+  .mob-7up {
+    width: 54px;
+    transform: rotate(-10deg);
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 14px rgba(137, 168, 100, 0.35));
+  }
+
+  .mob-midsommar {
+    width: 135px;
+    filter: drop-shadow(0 0 20px rgba(245, 188, 78, 0.55));
+  }
+
+  .mobile-cluster-art {
+    margin: 26px auto 36px;
+  }
+
+  .mob-marie {
+    width: 120px;
+    filter: drop-shadow(0 14px 30px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 22px rgba(56, 189, 248, 0.3));
+    animation: floatDriftA 9s ease-in-out infinite alternate;
+  }
+}
+
+@media (max-width: 600px) {
   .letter-layout {
-    padding: 60px 20px 90px;
+    padding: 50px 18px 80px;
   }
 
   .letter-content {
     font-size: 1.15rem;
     line-height: 1.85;
+    margin-bottom: 70px;
   }
 
   .intro-heading {
-    font-size: 2rem;
+    font-size: 1.9rem;
   }
 
   .portrait-container {
-    max-width: 320px;
+    max-width: 310px;
     width: 100%;
     aspect-ratio: 4 / 3;
+    margin-bottom: 18px;
   }
+
+  .header-name {
+    font-size: 1.8rem;
+  }
+
+  .mob-chicken { width: 38px; }
+  .mob-flower { width: 54px; }
+  .mob-junimo { width: 34px; }
+  .mob-7up { width: 46px; }
+  .mob-midsommar { width: 110px; }
+  .mob-marie { width: 100px; }
 }
