@@ -329,6 +329,7 @@ class AudioPlayer {
     this.isPlaying = false;
     this.ytPlayer = null;
     this.ytReady = false;
+    this.wantsToPlay = false;
 
     this.initYouTube();
     this.bindEvents();
@@ -342,51 +343,109 @@ class AudioPlayer {
       firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     }
 
-    window.onYouTubeIframeAPIReady = () => {
-      this.ytPlayer = new YT.Player('ytPlayer', {
-        height: '10',
-        width: '10',
-        videoId: '7YDkrJaiCrw',
-        playerVars: {
-          autoplay: 0,
-          controls: 0,
-          loop: 1,
-          playlist: '7YDkrJaiCrw'
-        },
-        events: {
-          onReady: () => {
-            this.ytReady = true;
+    const init = () => {
+      try {
+        this.ytPlayer = new YT.Player('ytPlayer', {
+          height: '200',
+          width: '200',
+          videoId: '7YDkrJaiCrw',
+          playerVars: {
+            autoplay: 0,
+            controls: 0,
+            disablekb: 1,
+            fs: 0,
+            loop: 1,
+            playlist: '7YDkrJaiCrw',
+            playsinline: 1,
+            rel: 0,
+            origin: window.location.origin && window.location.origin !== 'null' ? window.location.origin : undefined
           },
-          onStateChange: (e) => {
-            if (e.data === YT.PlayerState.PLAYING) {
-              this.updateUI(true);
-            } else if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED) {
-              this.updateUI(false);
+          events: {
+            onReady: (e) => {
+              this.ytReady = true;
+              try {
+                e.target.unMute();
+                e.target.setVolume(100);
+              } catch (err) {}
+
+              // Si el usuario ya dio clic en "Entrar", arrancar la música inmediatamente
+              if (this.wantsToPlay) {
+                this.executePlay();
+              }
+            },
+            onStateChange: (e) => {
+              if (e.data === YT.PlayerState.PLAYING) {
+                this.updateUI(true);
+              } else if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED) {
+                this.updateUI(false);
+              }
+            },
+            onError: (e) => {
+              console.warn('YouTube Player warning/error code:', e.data);
+              if (this.fallbackAudio && this.wantsToPlay) {
+                this.fallbackAudio.play().catch(() => {});
+              }
             }
           }
-        }
-      });
+        });
+      } catch (err) {
+        console.warn('Error inicializando reproductor:', err);
+      }
     };
+
+    if (window.YT && window.YT.Player) {
+      init();
+    } else {
+      window.onYouTubeIframeAPIReady = init;
+    }
   }
 
   bindEvents() {
     if (this.btn) {
-      this.btn.addEventListener('click', () => this.toggle());
+      this.btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.toggle();
+      });
     }
 
     if (this.fallbackAudio) {
       this.fallbackAudio.addEventListener('play', () => this.updateUI(true));
       this.fallbackAudio.addEventListener('pause', () => this.updateUI(false));
     }
+
+    // Si el navegador bloqueó el autoplay en el botón de entrar, reactivar en el siguiente toque/clic
+    const unlockOnGesture = () => {
+      if (this.wantsToPlay && !this.isPlaying) {
+        this.executePlay();
+      }
+    };
+    window.addEventListener('click', unlockOnGesture, { passive: true });
+    window.addEventListener('touchstart', unlockOnGesture, { passive: true });
   }
 
-  play() {
+  executePlay() {
     if (this.ytReady && this.ytPlayer && typeof this.ytPlayer.playVideo === 'function') {
       try {
+        this.ytPlayer.unMute();
+        this.ytPlayer.setVolume(100);
         this.ytPlayer.playVideo();
         this.updateUI(true);
-        return;
-      } catch (err) {}
+        return true;
+      } catch (err) {
+        console.warn('Fallo al ejecutar playVideo:', err);
+      }
+    }
+
+    // Fallback directo por postMessage al iframe
+    const iframe = document.querySelector('#ytContainer iframe');
+    if (iframe && iframe.contentWindow) {
+      try {
+        iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'unMute', args: [] }), '*');
+        iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'setVolume', args: [100] }), '*');
+        iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo', args: [] }), '*');
+        this.updateUI(true);
+        return true;
+      } catch (e) {}
     }
 
     if (this.fallbackAudio) {
@@ -394,14 +453,30 @@ class AudioPlayer {
         this.updateUI(true);
       }).catch(() => {});
     }
+
+    return false;
+  }
+
+  play() {
+    this.wantsToPlay = true;
+    this.executePlay();
   }
 
   pause() {
+    this.wantsToPlay = false;
     if (this.ytReady && this.ytPlayer && typeof this.ytPlayer.pauseVideo === 'function') {
       try {
         this.ytPlayer.pauseVideo();
       } catch (err) {}
     }
+
+    const iframe = document.querySelector('#ytContainer iframe');
+    if (iframe && iframe.contentWindow) {
+      try {
+        iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }), '*');
+      } catch (e) {}
+    }
+
     if (this.fallbackAudio && !this.fallbackAudio.paused) {
       this.fallbackAudio.pause();
     }
