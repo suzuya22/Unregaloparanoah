@@ -23,12 +23,21 @@ class PetalCanvas {
     this.petalCount = window.innerWidth < 768 ? 20 : 32;
     this.moteCount = window.innerWidth < 768 ? 22 : 40;
 
-    // Sprites de Stardew Valley (Junimos animados y Pollitos Azules)
+    // Sprites e imágenes de fondo (Stardew, 7UP, Marie, Midsommar, Lycoris)
     this.junimoSheet = new Image();
     this.junimoSheet.src = 'assets/junimo_spritesheet.png';
     this.chickenImg = new Image();
     this.chickenImg.src = 'assets/blue_chicken.png';
-    this.creatureCount = window.innerWidth < 768 ? 6 : 10;
+    this.sevenUpImg = new Image();
+    this.sevenUpImg.src = 'assets/7up_can_transparent.png';
+    this.marieImg = new Image();
+    this.marieImg.src = 'assets/marie_skullgirls.png';
+    this.midsommarImg = new Image();
+    this.midsommarImg.src = 'assets/midsommar_logo.png';
+    this.lycorisImg = new Image();
+    this.lycorisImg.src = 'assets/flowers/lycoris_blue_transparent.png';
+
+    this.creatureCount = window.innerWidth < 768 ? 9 : 10;
     this.creatures = [];
 
     this.init();
@@ -111,28 +120,64 @@ class PetalCanvas {
   }
 
   createCreature(randomY = false) {
-    const isChicken = Math.random() < 0.45;
-    
-    // 75% caen por los márgenes laterales y 25% caen sutilmente por el centro
-    // para no tapar ni estorbar la lectura de la carta
+    const isMobile = this.width <= 768;
+    let type;
+
+    if (isMobile) {
+      // En celular llueven todas las cosas de sus gustos que estaban en los laterales:
+      // Junimos, Pollito, 7UP, Marie, Midsommar y flores Lycoris
+      const r = Math.random();
+      if (r < 0.25) type = 'junimo';
+      else if (r < 0.45) type = 'chicken';
+      else if (r < 0.60) type = '7up';
+      else if (r < 0.74) type = 'marie';
+      else if (r < 0.88) type = 'midsommar';
+      else type = 'flower';
+    } else {
+      type = Math.random() < 0.5 ? 'chicken' : 'junimo';
+    }
+
+    // Distribución por la pantalla
     let x;
-    const isMargin = Math.random() < 0.75;
+    const isMargin = Math.random() < (isMobile ? 0.60 : 0.75);
     if (isMargin) {
       if (Math.random() < 0.5) {
-        x = Math.random() * (this.width * 0.26); // Lateral izquierdo
+        x = Math.random() * (this.width * 0.28);
       } else {
-        x = this.width - Math.random() * (this.width * 0.26); // Lateral derecho
+        x = this.width - Math.random() * (this.width * 0.28);
       }
     } else {
-      x = this.width * 0.28 + Math.random() * (this.width * 0.44); // Centro
+      x = this.width * 0.20 + Math.random() * (this.width * 0.60);
+    }
+
+    let size = 32;
+    let speedY = Math.random() * 0.42 + 0.32;
+    let alpha = isMargin ? (Math.random() * 0.18 + 0.65) : (Math.random() * 0.15 + 0.42);
+
+    if (type === 'chicken') {
+      size = Math.random() * 8 + 32;
+    } else if (type === 'junimo') {
+      size = Math.random() * 8 + 30;
+    } else if (type === '7up') {
+      size = Math.random() * 10 + 32;
+      speedY = Math.random() * 0.36 + 0.30;
+    } else if (type === 'marie') {
+      size = Math.random() * 15 + 46;
+      speedY = Math.random() * 0.32 + 0.26;
+    } else if (type === 'midsommar') {
+      size = Math.random() * 20 + 60;
+      speedY = Math.random() * 0.30 + 0.25;
+    } else if (type === 'flower') {
+      size = Math.random() * 14 + 38;
+      speedY = Math.random() * 0.40 + 0.30;
     }
 
     return {
-      type: isChicken ? 'chicken' : 'junimo',
+      type: type,
       x: x,
-      y: randomY ? Math.random() * this.height : -55,
-      size: isChicken ? (Math.random() * 8 + 32) : (Math.random() * 8 + 30),
-      speedY: Math.random() * 0.42 + 0.32, // Descenso flotante y pausado
+      y: randomY ? Math.random() * this.height : -70,
+      size: size,
+      speedY: speedY,
       speedX: (Math.random() - 0.5) * 0.3,
       sway: Math.random() * Math.PI * 2,
       swaySpeed: Math.random() * 0.02 + 0.012,
@@ -140,9 +185,7 @@ class PetalCanvas {
       frame: Math.floor(Math.random() * 4),
       frameTimer: 0,
       frameDelay: Math.floor(Math.random() * 4 + 10),
-      // En los laterales son más vivos, en el centro tienen opacidad sutil
-      alpha: isMargin ? (Math.random() * 0.2 + 0.68) : (Math.random() * 0.15 + 0.42),
-      isMargin: isMargin
+      alpha: alpha
     };
   }
 
@@ -151,31 +194,55 @@ class PetalCanvas {
     ctx.save();
     ctx.translate(c.x, c.y);
 
-    // Mecerse suavemente al caer
     const tilt = Math.sin(c.sway) * 0.12;
     ctx.rotate(tilt);
 
-    // Si es pollito, orientarlo hacia donde flota
+    ctx.globalAlpha = c.alpha;
+
     if (c.type === 'chicken') {
       const flipX = Math.sin(c.sway) > 0 ? 1 : -1;
       ctx.scale(flipX, 1);
-    }
-
-    ctx.globalAlpha = c.alpha;
-    ctx.imageSmoothingEnabled = false; // Pixel-art nítido sin borrosidad
-
-    if (c.type === 'junimo' && this.junimoSheet.complete && this.junimoSheet.naturalWidth > 0) {
-      const sx = c.frame * 48;
-      ctx.drawImage(
-        this.junimoSheet,
-        sx, 0, 48, 48,
-        -c.size / 2, -c.size / 2, c.size, c.size
-      );
-    } else if (c.type === 'chicken' && this.chickenImg.complete && this.chickenImg.naturalWidth > 0) {
-      ctx.drawImage(
-        this.chickenImg,
-        -c.size / 2, -c.size / 2, c.size, c.size
-      );
+      ctx.imageSmoothingEnabled = false;
+      if (this.chickenImg.complete && this.chickenImg.naturalWidth > 0) {
+        ctx.drawImage(this.chickenImg, -c.size / 2, -c.size / 2, c.size, c.size);
+      }
+    } else if (c.type === 'junimo') {
+      ctx.imageSmoothingEnabled = false;
+      if (this.junimoSheet.complete && this.junimoSheet.naturalWidth > 0) {
+        const sx = c.frame * 48;
+        ctx.drawImage(this.junimoSheet, sx, 0, 48, 48, -c.size / 2, -c.size / 2, c.size, c.size);
+      }
+    } else if (c.type === '7up') {
+      ctx.imageSmoothingEnabled = true;
+      if (this.sevenUpImg.complete && this.sevenUpImg.naturalWidth > 0) {
+        const h = c.size * 2.08;
+        ctx.rotate(-0.15);
+        ctx.drawImage(this.sevenUpImg, -c.size / 2, -h / 2, c.size, h);
+      }
+    } else if (c.type === 'marie') {
+      ctx.imageSmoothingEnabled = true;
+      if (this.marieImg.complete && this.marieImg.naturalWidth > 0) {
+        const h = c.size * 1.17;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = 'rgba(56, 189, 248, 0.35)';
+        ctx.drawImage(this.marieImg, -c.size / 2, -h / 2, c.size, h);
+      }
+    } else if (c.type === 'midsommar') {
+      ctx.imageSmoothingEnabled = true;
+      if (this.midsommarImg.complete && this.midsommarImg.naturalWidth > 0) {
+        const h = c.size * 0.388;
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = 'rgba(245, 188, 78, 0.45)';
+        ctx.drawImage(this.midsommarImg, -c.size / 2, -h / 2, c.size, h);
+      }
+    } else if (c.type === 'flower') {
+      ctx.imageSmoothingEnabled = true;
+      if (this.lycorisImg.complete && this.lycorisImg.naturalWidth > 0) {
+        ctx.rotate(c.sway * 0.5);
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = 'rgba(56, 189, 248, 0.35)';
+        ctx.drawImage(this.lycorisImg, -c.size / 2, -c.size / 2, c.size, c.size);
+      }
     }
 
     ctx.restore();

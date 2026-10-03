@@ -619,36 +619,14 @@ body {
 }
 
 @media (max-width: 768px) {
-  /* En celular se preservan las barras a los costados, escaladas proporcionalmente */
+  /* En celular las barras laterales estáticas se ocultan porque todos sus elementos
+     (7UP, Marie, Midsommar, Pollito, Junimo y flores Lycoris) caen suavemente en el fondo con los pétalos */
   .floral-sidebar {
-    width: 120px;
-    display: block !important;
+    display: none !important;
   }
-
-  .edge-item.flower-l1,
-  .edge-item.flower-l2,
-  .edge-item.flower-l3,
-  .edge-item.flower-l4 {
-    width: 170px !important;
-    left: -85px !important;
-  }
-
-  .edge-item.flower-r1,
-  .edge-item.flower-r2,
-  .edge-item.flower-r3,
-  .edge-item.flower-r4 {
-    width: 170px !important;
-    right: -85px !important;
-  }
-
-  .decor-7up { width: 56px; left: 6px; }
-  .decor-chicken { width: 48px; left: 8px; }
-  .decor-midsommar { width: 100px; left: 2px; }
-  .decor-marie { width: 90px; right: 4px; }
-  .decor-junimo { width: 42px; right: 8px; }
 
   .letter-layout {
-    padding: 60px 22px 90px;
+    padding: 60px 20px 90px;
   }
 
   .letter-content {
